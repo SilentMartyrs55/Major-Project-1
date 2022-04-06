@@ -14,3 +14,6 @@ The software will collate sources of statistical data such excel spreadsheets fr
 • Why would anyone want to use the software over existing processes?
 My software will compile data from many different sources, making it the most accurate and thorough assesment of the data. Also, the User Experience of existing sources leaves much room for improvement. My program will be intuitive, easy to use and understand.
 
+
+UML Diagrams:
+![162068222-e264a514-33c3-4c33-89f0-fd5f5fb3b8f9](https://user-images.githubusercontent.com/102890089/162072341-0a6d3b02-75b5-4345-b273-2c5b6ad2d9f1.png)
