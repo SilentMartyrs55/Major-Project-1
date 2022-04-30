@@ -1,5 +1,5 @@
 // **********************************************************************************
-// Title: Major Project Part 1
+// Title: Major Project Part 2
 // Author: Chris Lamb
 // Course Section: CMIS202-ONL1 (Seidel) Spring 2022
 // File: ReadExcelFile.java
@@ -21,7 +21,7 @@ public class ReadExcelFile{
 
    //Create instance variables
 	String[][] dataTable = null;
-	File file = new File("C:\\Users\\Chris\\Desktop\\CrimeDatabaseTool\\Test.xlsx");
+	File file = new File("C:\\Users\\Chris\\Desktop\\CrimeDatabaseTool\\CountyDataFormatted.xlsx");
    
    //Try loop that allows for exception handling
 	try {

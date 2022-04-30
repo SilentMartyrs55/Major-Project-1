@@ -1,5 +1,5 @@
 // **********************************************************************************
-// Title: Major Project Part 1
+// Title: Major Project Part 2
 // Author: Chris Lamb
 // Course Section: CMIS202-ONL1 (Seidel) Spring 2022
 // File: BuildGui.java
@@ -17,11 +17,15 @@ import javax.swing.table.*;
 
 public class BuildGui{
                 
-   //Method to fill the JTable with the contents of the desired excel file             
+   //Methods to fill the JTable with the contents of the desired excel file             
    public static String[][] input(){
             String[][] output = ReadExcelFile.Read();
             return output;
            }
+   public static String[][] input2(){
+            String[][] output1 = ReadExcelFile2.Read();
+            return output1;
+            }
 
       public BuildGui() throws Exception{
    
@@ -48,14 +52,25 @@ public class BuildGui{
          });
     
       //Create and populate the importedData table 
-      String columns[] = {"City", "Population", "Aggrivated Assault"};
+      String columns[] = {"Jurisdiction", "Year", "Population", "Murder", "Rape", "Robbery", "Agg. Assault", "B&E", "Larceny Theft"};
       JTable importedData = new JTable(input(), columns);
       JScrollPane scrollPane = new JScrollPane(importedData);
+      scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
       importTab.add(scrollPane, BorderLayout.CENTER);
       
-      //Create the region View Tab
       JPanel regionViewTab = new JPanel();
-      JButton stateView = new JButton("Statewide");
+      
+      //Create regionType1
+      JTable importedData2 = new JTable(input(), columns);
+      JScrollPane regionType1 = new JScrollPane(importedData2);
+      regionType1.setPreferredSize(new Dimension(1000, 1000));   
+      
+      //Create regionType2
+      String columns2[] = {"Juriscition", "County", "Year", "Population", "Murder", "Rape", "Robbery", "Agg. Assault", "B&E", "Larceny Theft", "M/V Theft"};
+      JTable importedData3 = new JTable(input2(), columns2);
+      JScrollPane regionType2 = new JScrollPane(importedData3);
+      regionType2.setPreferredSize(new Dimension(1000, 1000)); 
+      
       
       //Create sub tabs for region pane and add their pictures
       JTabbedPane subTabs = new JTabbedPane();
@@ -71,13 +86,57 @@ public class BuildGui{
       ImageIcon mViewPic = new ImageIcon(mPic);
       JLabel mViewLabel = new JLabel(mViewPic);;
       subTabs.addTab("Municipality View", mViewLabel);
-      regionViewTab.add(subTabs);
+      
+      //Combo box for region view tab
+      JLabel regionLabel = new JLabel("Select your table type:");
+      String[] regionsString = {"Statewide", "County", "Municipality",};
+      JComboBox regions = new JComboBox(regionsString);
+      
+      //ActionListener for region selector
+      regions.addActionListener(new ActionListener(){
+       public void actionPerformed(ActionEvent e){
+         JComboBox regions = (JComboBox)e.getSource();
+         String region = (String)regions.getSelectedItem();
+         
+         if (region == "Statewide")
+            System.out.println("Statewide");
+         if (region == "County")
+            regionViewTab.add(regionType1);
+         if (region == "Municipality")
+            regionViewTab.add(regionType2);
+      }
+      });
+      
+      //Add resetButton to clear table and allow for a different one to populate upon selection
+      JButton resetButton = new JButton("Reset");
+      resetButton.addActionListener(new ActionListener(){
+      public void actionPerformed(ActionEvent e){
+      
+         regionViewTab.remove(regionType1);
+         regionViewTab.remove(regionType2);
+         regionViewTab.repaint();
+      }
+      });
+      
+      //Add the label, comboBox and resetButton
+      regionViewTab.add(regionLabel);
+      regionViewTab.add(regions);
+      regionViewTab.add(resetButton);
+      
+      //Create the processData tab
+      JLabel label2 = new JLabel("Process your data: ");
+      JPanel processDataTab = new JPanel();
+      processDataTab.add(label2);
+      String[] dataString = {"Total Crimes by County", "Total Crimes per County in 1 year"};
+      JComboBox processes = new JComboBox(dataString);
+      processDataTab.add(processes);
          
       //Create the tabbed pane and add the cards
       JTabbedPane tabbedPane = new JTabbedPane();
       tabbedPane.addTab("Welcome to the Maryland Crime Database Tool", welcomeTab);
       tabbedPane.addTab("Import", importTab);
       tabbedPane.addTab("Region View", regionViewTab);
+      tabbedPane.addTab("Process Data", processDataTab);
       
       //Create the frame and show
       frame.getContentPane().add(BorderLayout.CENTER, tabbedPane);

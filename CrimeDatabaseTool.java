@@ -1,9 +1,9 @@
 // **********************************************************************************
-// Title: Major Project Part 1
+// Title: Major Project Part 2
 // Author: Chris Lamb
 // Course Section: CMIS202-ONL1 (Seidel) Spring 2022
 // File: CrimeDatabaseTool.java
-// Description: This file contains the main method and runs the GU
+// Description: This file contains the main method and runs the GUI
 // **********************************************************************************
 import javax.swing.SwingUtilities;
 
