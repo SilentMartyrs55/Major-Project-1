@@ -1,4 +1,4 @@
-# Major-Project-1
+# Major-Project-Part-2
 CMIS 202 at FCC
 
 Project Description:
