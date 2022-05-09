@@ -1,5 +1,5 @@
 // **********************************************************************************
-// Title: Major Project Part 2
+// Title: Major Project Part 3
 // Author: Chris Lamb
 // Course Section: CMIS202-ONL1 (Seidel) Spring 2022
 // File: BuildGui.java
@@ -15,7 +15,7 @@ import java.io.*;
 import java.util.Arrays;
 import javax.swing.table.*;
 
-public class BuildGui{
+public class BuildGui extends Search{
                 
    //Methods to fill the JTable with the contents of the desired excel file             
    public static String[][] input(){
@@ -26,7 +26,13 @@ public class BuildGui{
             String[][] output1 = ReadExcelFile2.Read();
             return output1;
             }
+            
+            String[][] countyData = ReadExcelFile.Read();
+            String[][] munData = ReadExcelFile2.Read();
+            String searchTerm;
 
+            
+        
       public BuildGui() throws Exception{
    
       //Create the frame
@@ -78,10 +84,12 @@ public class BuildGui{
       ImageIcon statewidePic = new ImageIcon(statePic);
       JLabel statewideLabel = new JLabel(statewidePic);
       subTabs.addTab("Statewide View", statewideLabel);
+      
       URL countyPic = new URL("https://msa.maryland.gov/msa/mdmanual/36loc/images/02maps/seatc.jpg");
       ImageIcon countyViewPic = new ImageIcon(countyPic);
       JLabel countyViewLabel = new JLabel(countyViewPic);
       subTabs.addTab("County View", countyViewLabel);
+      
       URL mPic = new URL("https://i.etsystatic.com/21348027/r/il/d45c6a/3036919394/il_570xN.3036919394_org6.jpg");
       ImageIcon mViewPic = new ImageIcon(mPic);
       JLabel mViewLabel = new JLabel(mViewPic);;
@@ -91,6 +99,29 @@ public class BuildGui{
       JLabel regionLabel = new JLabel("Select your table type:");
       String[] regionsString = {"Statewide", "County", "Municipality",};
       JComboBox regions = new JComboBox(regionsString);
+      
+      //Create searchTable
+      //JTable searchData = new JTable(Search.linearCountySearch, columns);
+      //JScrollPane regionType3 = new JScrollPane(searchData);
+      //regionType3.setPreferredSize(new Dimension(1000, 1000));   
+      
+      //Search bar for region view tab
+      JLabel searchLabel = new JLabel("Search by County or Municipality: ");
+      JTextField searchBox = new JTextField(20);
+      JButton go = new JButton("GO");
+      go.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(ActionEvent event) {
+               String searchTerm = searchBox.getText();
+               if (Arrays.asList(counties).contains(searchTerm))
+                  //searchData.add(Search.linearCountySearch(countyData, searchTerm));
+                  //regionViewTab.add(regionType3);
+                  Search.linearCountySearch(countyData, searchTerm);
+               if (Arrays.asList(municipalities).contains(searchTerm))
+                  Search.linearMunSearch(munData, searchTerm);
+            }
+         });
+      
+      
       
       //ActionListener for region selector
       regions.addActionListener(new ActionListener(){
@@ -118,19 +149,46 @@ public class BuildGui{
       }
       });
       
-      //Add the label, comboBox and resetButton
+      
+      //Add the label, comboBox and resetButton to the region view pane
       regionViewTab.add(regionLabel);
       regionViewTab.add(regions);
       regionViewTab.add(resetButton);
+      regionViewTab.add(searchLabel);
+      regionViewTab.add(searchBox);
+      regionViewTab.add(go);
+      
+      //Create blank JTable for Process Data Tab
+      String[] columnsAdd = {"County", "Crime", "Total"};
+      int numRows = 15;
+      DefaultTableModel model = new DefaultTableModel(numRows, columnsAdd.length);
+      model.setColumnIdentifiers(columnsAdd);
+      JTable processDataTable = new JTable(model);
       
       //Create the processData tab
-      JLabel label2 = new JLabel("Process your data: ");
       JPanel processDataTab = new JPanel();
+      JLabel label2 = new JLabel("Enter the County: ");
       processDataTab.add(label2);
-      String[] dataString = {"Total Crimes by County", "Total Crimes per County in 1 year"};
-      JComboBox processes = new JComboBox(dataString);
-      processDataTab.add(processes);
-         
+      JTextField countyField = new JTextField(20);
+      processDataTab.add(countyField);
+      JLabel label3 = new JLabel("Enter the Crime Type: ");
+      processDataTab.add(label3);
+      JTextField crimeField = new JTextField(20);
+      processDataTab.add(crimeField);
+      JButton go2 = new JButton("GO");
+      processDataTab.add(go2);
+      JButton reset = new JButton("Reset");
+      processDataTab.add(reset);
+      //processDataTab.add(processDataTable, BorderLayout.SOUTH);
+      reset.addActionListener(new ActionListener(){
+      public void actionPerformed(ActionEvent e){
+            processDataTab.add(processDataTable);
+
+
+      }
+      });
+      
+      
       //Create the tabbed pane and add the cards
       JTabbedPane tabbedPane = new JTabbedPane();
       tabbedPane.addTab("Welcome to the Maryland Crime Database Tool", welcomeTab);
