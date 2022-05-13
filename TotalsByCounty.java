@@ -31,14 +31,14 @@ public class TotalsByCounty{
       public String[][] countyData;
       public String[][] munData;
    
-      public static searchInstance add(String searchCounty, String searchCrime){
-      
+      public static String[] addCounty(String search, String searchCrime){
+    
       //Instance variables
       double total = 0;
       double year = 0;
       int i = 0;
       int j = 0;
-      String[][] start = ReadExcelFile.Read();
+      String[][] start = ReadExcelFile.getCountyData();
       
       //Determine what column of the excel file to read based off user's input
       if(searchCrime.equals("Murder"))
@@ -57,12 +57,12 @@ public class TotalsByCounty{
          j = 9;
       
       //Make sure the user's input in a valid county in MD
-      if (!Arrays.asList(Search.counties).contains(searchCounty))
-      System.out.println(searchCounty + " is not in the list of counties in MD");
+      if (!Arrays.asList(Search.counties).contains(search))
+      System.out.println(search + " is not in the list of counties in MD");
       
       //Total the select crime in the selected county
       while (i < 1103){
-         if (start[i][0].equals(searchCounty + " County")){                 
+         if (start[i][0].equals(search + " County")){                 
                   total += (Double.parseDouble(start[i][j]));
                year++;
                i++;
@@ -70,28 +70,56 @@ public class TotalsByCounty{
             i++;
          }     
       }
-      return new searchInstance(total, year);
+      String strTotal = String.valueOf(total);
+      String strYear = String.valueOf(year);
+      String[] result = {search, searchCrime, strTotal, strYear};
+      return result;
    }
-      //Driver
-      public static void main(String[] args){
+   
+   public static String[] addMun(String search, String searchCrime){
       
-      //Create the scanner and accept user input
-      Scanner sc = new Scanner(System.in);
-      System.out.print("Enter a County: ");
-      String searchCounty = sc.nextLine();
-      System.out.print("Enter a Crime: ");
-      String searchCrime = sc.nextLine();
-      DecimalFormat df = new DecimalFormat("#,###");
+      //Instance variables
+      double total = 0;
+      double year = 0;
+      int i = 0;
+      int j = 0;
+      String[][] start = ReadExcelFile.getMunData();
       
-      searchInstance search = add(searchCounty, searchCrime);
+      //Determine what column of the excel file to read based off user's input
+      if(searchCrime.equals("Murder"))
+         j = 4;
+      if(searchCrime.equals("Rape"))
+         j = 5;
+      if(searchCrime.equals("Robbery"))
+         j = 6;
+      if(searchCrime.equals("Aggrivated Assault"))
+         j = 7;
+      if(searchCrime.equals("Breaking and Entering"))
+         j = 8;
+      if(searchCrime.equals("Larceny"))
+         j = 9;
+      if(searchCrime.equals("Motor Vehicle Theft"))
+         j = 10;
       
-      //Display the results
-      System.out.print(searchCounty + " County has had this many counts of " + searchCrime + ": ");
-      System.out.print(df.format(search.total));
-      System.out.print(" in the past " + (df.format(search.year)) + " years");   
+      //Make sure the user's input in a valid county in MD
+      if (!Arrays.asList(Search.municipalities).contains(search))
+      System.out.println(search + " is not in the list of counties in MD");
+      
+      //Total the select crime in the selected county
+      while (i < 4284){
+         if (start[i][0].equals(search)){                 
+                  total += (Double.parseDouble(start[i][j]));
+               year++;
+               i++;
+         } else{
+            i++;
+         }     
+      }
+      String strTotal = String.valueOf(total);
+      String strYear = String.valueOf(year);
+      String[] result = {search, searchCrime, strTotal, strYear};
+      return result;
+   }
+   
    
    }
-}
-
-
-   

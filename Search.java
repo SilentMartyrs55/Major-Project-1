@@ -1,5 +1,5 @@
 // **********************************************************************************
-// Title: Major Project Part 3
+// Title: Major Project Part 4
 // Author: Chris Lamb
 // Course Section: CMIS202-ONL1 (Seidel) Spring 2022
 // File: Search.java
@@ -13,7 +13,12 @@ import java.text.DecimalFormat;
 public class Search{
    
     //Create the arrayList to store our search results
-    public static ArrayList<String> ar = new ArrayList<String>();  
+    public static ArrayList ar = new ArrayList();  
+    public static String[][] stri = null;
+    public static String temp = null;
+    public static String[][] countyData = ReadExcelFile.getCountyData();
+    String[][] munData = ReadExcelFile.getMunData();
+
       
     //String array containing all counties in MD  
     public static String[] counties = {"Allegany", "Anne Arundel", "Baltimore", "Calvert", "Caroline", "Carroll", "Cecil", "Charles",
@@ -45,47 +50,59 @@ public class Search{
                                      };
 
     //This method searches the county data excel file and displays the crimes and their counts by years
-    public static void linearCountySearch(String[][] countyData, String searchTerm)
-    {
-            DecimalFormat df = new DecimalFormat("#,###");
-      int i = 0;
-      int j = 0;
-      
-      if (!Arrays.asList(counties).contains(searchTerm))
-         System.out.println(searchTerm + " is not in the list of counties in MD");
-      
-      while (i < 1103){
-         if (countyData[i][j].equals(searchTerm + " County")){
-            for(int k = 0; k < 10; k++)
-               //ar.add(countyData[i][k]);
-               System.out.print(countyData[i][k] + " - ");
-               System.out.println();
-               i++;
-         } else{
-            i++;
-         }     
-      }
-      }
-    
-    //This method searches the municipality data excel file and displays the crimes and their counts by years  
-      public static void linearMunSearch(String[][] munData, String searchTerm)
+      public static String[][] linearCountySearch(String[][] countyData, String searchTerm)
     {
     
       int l = 0;
       int m = 0;
+      String[][] summ = new String[35][11];
+      int n = 0;
+      int q = 0;
       
-      if (!Arrays.asList(municipalities).contains(searchTerm))
-         System.out.println(searchTerm + " is not in the list of municipalities in MD");
+      while (l < 1104){
+         if (countyData[l][0].equals(searchTerm)){
+            for(n = 0; n < 11; n++){
+               if(q < 50){
+               
+                summ[q][n] = ((countyData[l][n]).toString());
+                
+                  }
+                  }
+                  q++;
+         } 
+            l++;
+             
+      }
+            return summ;
+
+      }
+      
+    
+    //This method searches the municipality data excel file and displays the crimes and their counts by years  
+      public static String[][] linearMunSearch(String[][] munData, String searchTerm)
+    {
+    
+      int l = 0;
+      int m = 0;
+      String[][] summ = new String[35][11];
+      int n = 0;
+      int q = 0;
       
       while (l < 4284){
-         if (munData[l][m].equals(searchTerm)){
-            for(int n = 0; n < 9; n++)
-                  System.out.print(munData[l][n]+" - ");
-                  System.out.println();
-               l++;
-         } else{
+         if (munData[l][0].equals(searchTerm)){
+            for(n = 0; n < 11; n++){
+               if(q < 50){
+               
+                summ[q][n] = ((munData[l][n]).toString());
+                
+                  }
+                  }
+                  q++;
+         } 
             l++;
-         }     
+             
       }
+            return summ;
+
       }
    } 

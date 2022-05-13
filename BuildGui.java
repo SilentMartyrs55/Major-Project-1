@@ -1,5 +1,5 @@
 // **********************************************************************************
-// Title: Major Project Part 3
+// Title: Major Project Part 4
 // Author: Chris Lamb
 // Course Section: CMIS202-ONL1 (Seidel) Spring 2022
 // File: BuildGui.java
@@ -14,24 +14,21 @@ import java.net.*;
 import java.io.*;
 import java.util.Arrays;
 import javax.swing.table.*;
+import java.awt.Component;
+import java.awt.Dimension;
+import javax.swing.BorderFactory;
+import java.awt.BorderLayout;
+
 
 public class BuildGui extends Search{
-                
-   //Methods to fill the JTable with the contents of the desired excel file             
-   public static String[][] input(){
-            String[][] output = ReadExcelFile.Read();
-            return output;
-           }
-   public static String[][] input2(){
-            String[][] output1 = ReadExcelFile2.Read();
-            return output1;
-            }
-            
-            String[][] countyData = ReadExcelFile.Read();
-            String[][] munData = ReadExcelFile2.Read();
-            String searchTerm;
-
-            
+                            
+      //Instance Variables
+      public static String[][] countyData = ReadExcelFile.getCountyData();
+      public static String[][] munData = ReadExcelFile.getMunData();
+      String searchTerm;
+      String[] searchResults;
+      public String search;
+      public String searchCrime; 
         
       public BuildGui() throws Exception{
    
@@ -46,91 +43,36 @@ public class BuildGui extends Search{
       JPanel welcomeTab = new JPanel();
       welcomeTab.add(label1);
       
-      //Create the import tab and functionality to import the excel file
-      JPanel importTab = new JPanel(new BorderLayout(0,3));
-      JButton importButton = new JButton("Import from excel file");
-      importButton.setSize(100,100);
-      importTab.add(importButton, BorderLayout.NORTH);
-      importButton.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-               //importedData.addRow(input());         
-            }
-         });
-    
-      //Create and populate the importedData table 
+      //Create Region View Tab and Column labels 
       String columns[] = {"Jurisdiction", "Year", "Population", "Murder", "Rape", "Robbery", "Agg. Assault", "B&E", "Larceny Theft"};
-      JTable importedData = new JTable(input(), columns);
-      JScrollPane scrollPane = new JScrollPane(importedData);
-      scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-      importTab.add(scrollPane, BorderLayout.CENTER);
-      
       JPanel regionViewTab = new JPanel();
+      regionViewTab.setLayout(new BoxLayout(regionViewTab, BoxLayout.Y_AXIS));
       
       //Create regionType1
-      JTable importedData2 = new JTable(input(), columns);
+      JTable importedData2 = new JTable(countyData, columns);
       JScrollPane regionType1 = new JScrollPane(importedData2);
-      regionType1.setPreferredSize(new Dimension(1000, 1000));   
       
       //Create regionType2
       String columns2[] = {"Juriscition", "County", "Year", "Population", "Murder", "Rape", "Robbery", "Agg. Assault", "B&E", "Larceny Theft", "M/V Theft"};
-      JTable importedData3 = new JTable(input2(), columns2);
+      JTable importedData3 = new JTable(munData, columns2);
       JScrollPane regionType2 = new JScrollPane(importedData3);
-      regionType2.setPreferredSize(new Dimension(1000, 1000)); 
-      
-      
-      //Create sub tabs for region pane and add their pictures
-      JTabbedPane subTabs = new JTabbedPane();
-      URL statePic = new URL("https://t4.ftcdn.net/jpg/01/66/60/97/360_F_166609757_6H0cHO6QSKB7OdPf2kLeGIOaVEoABpz8.jpg");
-      ImageIcon statewidePic = new ImageIcon(statePic);
-      JLabel statewideLabel = new JLabel(statewidePic);
-      subTabs.addTab("Statewide View", statewideLabel);
-      
-      URL countyPic = new URL("https://msa.maryland.gov/msa/mdmanual/36loc/images/02maps/seatc.jpg");
-      ImageIcon countyViewPic = new ImageIcon(countyPic);
-      JLabel countyViewLabel = new JLabel(countyViewPic);
-      subTabs.addTab("County View", countyViewLabel);
-      
-      URL mPic = new URL("https://i.etsystatic.com/21348027/r/il/d45c6a/3036919394/il_570xN.3036919394_org6.jpg");
-      ImageIcon mViewPic = new ImageIcon(mPic);
-      JLabel mViewLabel = new JLabel(mViewPic);;
-      subTabs.addTab("Municipality View", mViewLabel);
       
       //Combo box for region view tab
       JLabel regionLabel = new JLabel("Select your table type:");
-      String[] regionsString = {"Statewide", "County", "Municipality",};
+      String[] regionsString = {"County", "Municipality",};
       JComboBox regions = new JComboBox(regionsString);
-      
-      //Create searchTable
-      //JTable searchData = new JTable(Search.linearCountySearch, columns);
-      //JScrollPane regionType3 = new JScrollPane(searchData);
-      //regionType3.setPreferredSize(new Dimension(1000, 1000));   
-      
-      //Search bar for region view tab
-      JLabel searchLabel = new JLabel("Search by County or Municipality: ");
-      JTextField searchBox = new JTextField(20);
-      JButton go = new JButton("GO");
-      go.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(ActionEvent event) {
-               String searchTerm = searchBox.getText();
-               if (Arrays.asList(counties).contains(searchTerm))
-                  //searchData.add(Search.linearCountySearch(countyData, searchTerm));
-                  //regionViewTab.add(regionType3);
-                  Search.linearCountySearch(countyData, searchTerm);
-               if (Arrays.asList(municipalities).contains(searchTerm))
-                  Search.linearMunSearch(munData, searchTerm);
-            }
-         });
-      
-      
-      
+      regions.setMaximumSize(new Dimension(100,200));
+      regions.setAlignmentX(Component.TOP_ALIGNMENT);
+      regionViewTab.setBorder(BorderFactory.createEtchedBorder(Color.BLUE, Color.RED));
+      regions.setForeground(Color.BLUE);
+      regions.setFont(new Font("Arial", Font.BOLD, 14));
+                 
       //ActionListener for region selector
       regions.addActionListener(new ActionListener(){
        public void actionPerformed(ActionEvent e){
-         JComboBox regions = (JComboBox)e.getSource();
-         String region = (String)regions.getSelectedItem();
+         JComboBox<String> combo = (JComboBox<String>) e.getSource();
+         String region = (String)combo.getSelectedItem();
          
-         if (region == "Statewide")
-            System.out.println("Statewide");
          if (region == "County")
             regionViewTab.add(regionType1);
          if (region == "Municipality")
@@ -145,56 +87,175 @@ public class BuildGui extends Search{
       
          regionViewTab.remove(regionType1);
          regionViewTab.remove(regionType2);
+         regionViewTab.revalidate();
          regionViewTab.repaint();
       }
       });
       
-      
-      //Add the label, comboBox and resetButton to the region view pane
-      regionViewTab.add(regionLabel);
-      regionViewTab.add(regions);
-      regionViewTab.add(resetButton);
-      regionViewTab.add(searchLabel);
-      regionViewTab.add(searchBox);
-      regionViewTab.add(go);
+      //Add the label, comboBox and resetButton to the region view panel
+      JPanel northBorder = new JPanel();
+      northBorder.add(regionLabel, BorderLayout.NORTH);
+      northBorder.add(regions, BorderLayout.NORTH);
+      northBorder.add(resetButton, BorderLayout.NORTH);
+      regionViewTab.add(northBorder);
+
       
       //Create blank JTable for Process Data Tab
-      String[] columnsAdd = {"County", "Crime", "Total"};
-      int numRows = 15;
-      DefaultTableModel model = new DefaultTableModel(numRows, columnsAdd.length);
-      model.setColumnIdentifiers(columnsAdd);
+      DefaultTableModel model = new DefaultTableModel(0, 0);
+      model.addColumn("County/Municipality");
+      model.addColumn("Crime");
+      model.addColumn("Total");
+      model.addColumn("Years");
+      
       JTable processDataTable = new JTable(model);
+      //JScrollpane that houses JTable
+      JScrollPane tablePane = new JScrollPane(processDataTable);
       
       //Create the processData tab
       JPanel processDataTab = new JPanel();
-      JLabel label2 = new JLabel("Enter the County: ");
-      processDataTab.add(label2);
+      processDataTab.setBorder(BorderFactory.createEtchedBorder(Color.BLUE, Color.RED));
+      processDataTab.setLayout(new BorderLayout());
+      JPanel northData = new JPanel();
+      
+      //County/municipality search bar
+      JLabel label2 = new JLabel("Enter the County/Municipality: ");
+      northData.add(label2, BorderLayout.NORTH);
       JTextField countyField = new JTextField(20);
-      processDataTab.add(countyField);
+      northData.add(countyField, BorderLayout.NORTH);
+      
+      //Crime search bar
       JLabel label3 = new JLabel("Enter the Crime Type: ");
-      processDataTab.add(label3);
+      northData.add(label3, BorderLayout.NORTH);
       JTextField crimeField = new JTextField(20);
-      processDataTab.add(crimeField);
-      JButton go2 = new JButton("GO");
-      processDataTab.add(go2);
+      northData.add(crimeField, BorderLayout.NORTH);
+      
+      //Calcualte button
+      JButton calc = new JButton("Calculate");
+      northData.add(calc, BorderLayout.NORTH);
+      
+      //Crime type label
+      JLabel crimeTypes = new JLabel("     Crime Types Include: Murder, Rape, Robbery, Aggrivated Assault, Breaking and Entering, Larceny, Motor Vehicle Theft");
+      crimeTypes.setFont(new Font("Arial", Font.BOLD, 20));
+      crimeTypes.setForeground(Color.blue);
+      processDataTab.add(crimeTypes, BorderLayout.CENTER);
+            
+      //Add the northdata and table to the process data tab
+      processDataTab.add(northData, BorderLayout.NORTH);
+      processDataTab.add(tablePane, BorderLayout.SOUTH);
+      
+      //Calculate button and action listener
+      calc.addActionListener(new ActionListener(){
+      public void actionPerformed(ActionEvent e){
+            search = countyField.getText();
+            searchCrime = crimeField.getText();
+            String[] newRow = null;
+            
+            if (Arrays.asList(Search.counties).contains(search))
+               {
+               newRow = TotalsByCounty.addCounty(search, searchCrime);
+               model.addRow(newRow);
+               }
+            else if (Arrays.asList(Search.municipalities).contains(search))
+               {
+               newRow = TotalsByCounty.addMun(search, searchCrime);
+               model.addRow(newRow);
+               }
+            countyField.setText("");
+            crimeField.setText("");
+            
+            }
+      });
+
+      //Reset button and action listener
       JButton reset = new JButton("Reset");
-      processDataTab.add(reset);
-      //processDataTab.add(processDataTable, BorderLayout.SOUTH);
       reset.addActionListener(new ActionListener(){
       public void actionPerformed(ActionEvent e){
-            processDataTab.add(processDataTable);
-
+      
+         processDataTab.remove(processDataTable);
+         regionViewTab.revalidate();
+         regionViewTab.repaint();
 
       }
       });
       
+      //Create the search tab
+      JPanel searchTab = new JPanel();
+      searchTab.setBorder(BorderFactory.createEtchedBorder(Color.BLUE, Color.RED));
+      DefaultTableModel model1 = new DefaultTableModel(0, 0);
+      JTable searchTable = new JTable(model1);      
+      JScrollPane regionType3 = new JScrollPane(searchTable);
+      regionType3.setPreferredSize(new Dimension(1000, 1000));
+       
+      //Search bar for search tab
+      JLabel searchLabel = new JLabel("Search by County or Municipality: ");
+      JTextField searchBox = new JTextField(20);
+      JButton go = new JButton("SEARCH");
+      
+      //Add components to search Tab
+      //searchTab.add(imported);
+      searchTab.add(searchLabel);
+      searchTab.add(searchBox);
+      searchTab.add(go);
+      searchTab.add(regionType3);
+      
+      DefaultTableModel model3 = new DefaultTableModel(50, 50);
+      
+      //Search button action listener
+      go.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(ActionEvent event) {
+      
+               search = searchBox.getText();
+               String[][] temp = Search.linearCountySearch(countyData, search);
+               String[][] tempest = Search.linearMunSearch(munData, search);
+               
+               if (Arrays.asList(Search.municipalities).contains(search)){
+                  DefaultTableModel model4 = new DefaultTableModel(tempest, columns2);
+                  searchTable.setModel(model4);
+                  }
+                  else if (Arrays.asList(Search.counties).contains(search)){
+                     DefaultTableModel model5 = new DefaultTableModel(temp, columns2);
+                     searchTable.setModel(model5);
+
+               }
+            }
+        } );
+         
+      //Create the help tab
+      JPanel helpTab = new JPanel();
+      helpTab.setBorder(BorderFactory.createEtchedBorder(Color.BLUE, Color.RED));
+      helpTab.setLayout(new BoxLayout(helpTab, BoxLayout.Y_AXIS));
+      
+      //Show county list
+      JLabel countiesLabel = new JLabel("These are valid counties in Maryland");
+      countiesLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+      countiesLabel.setFont(new Font("Arial", Font.BOLD, 20));
+      countiesLabel.setForeground(Color.blue);
+      helpTab.add(countiesLabel);
+      JList countyList = new JList(counties);
+      countyList.setLayoutOrientation(JList.HORIZONTAL_WRAP);
+      countyList.setVisibleRowCount(10);
+      helpTab.add(countyList);
+      
+      //Show Municipality list
+      JLabel munLabel = new JLabel("These are valid municipalities in Maryland");
+      munLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+      munLabel.setFont(new Font("Arial", Font.BOLD, 20));
+      munLabel.setForeground(Color.blue);
+      helpTab.add(munLabel);
+      JList munList = new JList(municipalities);
+      munList.setLayoutOrientation(JList.HORIZONTAL_WRAP);
+      munList.setVisibleRowCount(20);
+      helpTab.add(munList);
+      
+      helpTab.setBorder(BorderFactory.createEtchedBorder(Color.BLUE, Color.RED));
       
       //Create the tabbed pane and add the cards
       JTabbedPane tabbedPane = new JTabbedPane();
       tabbedPane.addTab("Welcome to the Maryland Crime Database Tool", welcomeTab);
-      tabbedPane.addTab("Import", importTab);
       tabbedPane.addTab("Region View", regionViewTab);
+      tabbedPane.addTab("Search", searchTab);
       tabbedPane.addTab("Process Data", processDataTab);
+      tabbedPane.addTab("Help", helpTab);
       
       //Create the frame and show
       frame.getContentPane().add(BorderLayout.CENTER, tabbedPane);
